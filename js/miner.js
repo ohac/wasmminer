@@ -124,7 +124,7 @@ $(function(){
             if (worker) {
               worker.terminate();
             }
-            worker = new Worker('worker_all.js');
+            worker = new Worker('/js/worker_all.js');
             workers[i] = worker;
             worker.onmessage = function(e) {
               var result = e.data;
