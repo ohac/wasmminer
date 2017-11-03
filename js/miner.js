@@ -1,6 +1,6 @@
 $(function(){
-  if (false) { // debug code
-    var worker = new Worker('worker_all.js');
+  if (true) { // debug code
+    var worker = new Worker('/js/worker_all.js');
     worker.onmessage = function(e) {
       var result = e.data;
       console.log('recv from worker: ' + result);
