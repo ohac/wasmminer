@@ -1,0 +1,8 @@
+0.0.0.0:8080 {
+  root ./
+  proxy /proxy localhost:8088 {
+    websocket
+    max_fails 1
+  }
+  ext .html 
+}
