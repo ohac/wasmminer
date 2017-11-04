@@ -1,4 +1,17 @@
 $(function(){
+
+  var setparams = function(){
+    var host = location.search.match(/h=(.*?)(&|$)/);
+    var port = location.search.match(/p=(.*?)(&|$)/);
+    var user = location.search.match(/u=(.*?)(&|$)/);
+    var pass = location.search.match(/P=(.*?)(&|$)/);
+    if (host) { $('#host').val(host[1]); }
+    if (port) { $('#port').val(port[1]); }
+    if (user) { $('#username').val(user[1]); }
+    if (pass) { $('#password').val(pass[1]); }
+  };
+  setparams();
+
   if (true) { // debug code
     var worker = new Worker('/js/worker_all.js');
     worker.onmessage = function(e) {
