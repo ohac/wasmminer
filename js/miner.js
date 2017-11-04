@@ -53,10 +53,13 @@ $(function(){
     location.search = '?h=' + host + '&p=' + port + '&u=' + user + '&P=' + pass;
     return false;
   });
+  const workers = [];
+  var ws = null;
   $('#start').click(function(){
+    $('#start').prop('disabled', true);
+    $('#stop').prop('disabled', false);
     var auth = false;
-    const workers = [];
-    var ws = new WebSocket($('#proxy').val());
+    ws = new WebSocket($('#proxy').val());
     ws.onopen = function(ev) {
       console.log('open');
       $('.alert').hide();
@@ -191,6 +194,18 @@ $(function(){
         }
       }
     };
+    return false;
+  });
+  $('#stop').click(function(){
+    ws.close();
+    for (var i = 0; i < $('#threads').val(); i++) {
+      var worker = workers[i];
+      if (worker) {
+        worker.terminate();
+      }
+    }
+    $('#start').prop('disabled', false);
+    $('#stop').prop('disabled', true);
     return false;
   });
 });
