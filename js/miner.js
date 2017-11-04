@@ -121,8 +121,19 @@ $(function(){
           }
         }
       }
-      if (json.id == 4) {
-        console.log('yay!?');
+      if (json.id == 4 && !json.method) {
+        if (json.result) {
+          $('#yay').show();
+          var yc = parseInt($('#yaycount').text());
+          yc++;
+          $('#yaycount').text(yc);
+        }
+        else {
+          $('#boo').show();
+          var bc = parseInt($('#boocount').text());
+          bc++;
+          $('#boocount').text(bc);
+        }
       }
       var method = json.method;
       var params = json.params;
