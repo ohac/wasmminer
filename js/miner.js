@@ -12,7 +12,7 @@ $(function(){
   };
   setparams();
 
-  if (true) { // debug code
+  if (false) { // debug code
     var worker = new Worker('/js/worker_all.js');
     worker.onmessage = function(e) {
       var result = e.data;
@@ -39,7 +39,7 @@ $(function(){
       work['xnonce2len'] = 4;
       work['xnonce2'] = '00000000';
       work['ntime'] = '59f5e2d7';
-      work['nonce'] = 0x1b00; // expected nonce: 0x1b8a
+      work['nonce'] = 0x1b80; // expected nonce: 0x1b8a
 
       worker.postMessage(work);
     }, 1000); // wait for main of foo.c
