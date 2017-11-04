@@ -35,7 +35,7 @@ $(function(){
   $('#start').click(function(){
     var auth = false;
     const workers = [];
-    var ws = new WebSocket('ws://localhost:8080/proxy'); // TODO
+    var ws = new WebSocket($('#proxy').val());
     ws.onopen = function(ev) {
       console.log('open');
       $('.alert').hide();
