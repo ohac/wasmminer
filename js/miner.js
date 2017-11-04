@@ -45,6 +45,14 @@ $(function(){
     }, 1000); // wait for main of foo.c
   }
 
+  $('#save').click(function(){
+    var host = $('#host').val();
+    var port = $('#port').val();
+    var user = $('#username').val();
+    var pass = $('#password').val();
+    location.search = '?h=' + host + '&p=' + port + '&u=' + user + '&P=' + pass;
+    return false;
+  });
   $('#start').click(function(){
     var auth = false;
     const workers = [];
