@@ -13,7 +13,7 @@ $(function(){
   setparams();
 
   if (false) { // debug code
-    var worker = new Worker('/js/worker_all.js');
+    var worker = new Worker('js/worker_all.js');
     worker.onmessage = function(e) {
       var result = e.data;
       console.log('recv from worker: ' + result);
@@ -159,7 +159,7 @@ $(function(){
             if (worker) {
               worker.terminate();
             }
-            worker = new Worker('/js/worker_all.js');
+            worker = new Worker('js/worker_all.js');
             workers[i] = worker;
             worker.onmessage = function(e) {
               var result = e.data;
