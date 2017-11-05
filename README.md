@@ -5,7 +5,7 @@
 ```
 sudo apt install golang
 export GOPATH=~/go
-go get gorilla/websocket
+go get github.com/gorilla/websocket
 cd wsproxy
 go build
 ./wsproxy
