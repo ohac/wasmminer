@@ -27,7 +27,7 @@ $(function(){
   };
 
   $('#bench').click(function(){
-    var worker = new Worker('/js/worker_all.js');
+    var worker = new Worker('js/worker_all.js');
     var now = new Date();
     worker.startt = now.getTime();
     worker.startn = 0x1a80;
@@ -184,7 +184,7 @@ $(function(){
             if (worker) {
               worker.terminate();
             }
-            worker = new Worker('/js/worker_all.js');
+            worker = new Worker('js/worker_all.js');
             var now = new Date();
             worker.startt = now.getTime();
             worker.startn = 0x10000000 * i;
