@@ -1,4 +1,6 @@
 $(function(){
+  var cores = navigator.hardwareConcurrency;
+  $('#threads').val(cores);
 
   var setparams = function(){
     var host = location.search.match(/h=(.*?)(&|$)/);
@@ -26,8 +28,29 @@ $(function(){
     return y;
   };
 
+  var rarity = function(hashi){
+    var rstr = 'n';
+    if (hashi < 0x1000) {
+      rstr = 'ur';
+    }
+    else if (hashi < 0x4000) {
+      rstr = 'sr';
+    }
+    else if (hashi < 0x10000) {
+      rstr = 'r';
+    }
+    else if (hashi < 0x40000) {
+      rstr = 'nr';
+    }
+    rstr = '#rare_' + rstr;
+    $(rstr).show();
+    var c = parseInt($(rstr + '_count').text());
+    c++;
+    $(rstr + '_count').text(c);
+  };
+
   $('#bench').click(function(){
-    var worker = new Worker('js/worker_all.js');
+    var worker = new Worker('js/em.js');
     var now = new Date();
     worker.startt = now.getTime();
     worker.startn = 0x1a80;
@@ -43,31 +66,29 @@ $(function(){
       var speed = 1000.0*diffn/difft;
       $('#meter1').text(parseInt(speed));
     }
-    setTimeout(function(){
-      var work = {};
-      work['jobid'] = '7b61';
-      work['clean'] = false;
+    var work = {};
+    work['jobid'] = '7b61';
+    work['clean'] = false;
 
-      work['prevhash'] = '1e924c35bc128651ad5618755c3ce078' +
-                         'e20896b652575e3411106f740000000b';
-      setdiff(work, 0.2);
-      work['coinb1'] = '010000000100000000000000000000000000000000000000' +
-                       '00000000000000000000000000ffffffff270332c80f062f' +
-                       '503253482f04d7e2f55908';
-      work['coinb2'] = '0d2f6e6f64655374726174756d2f0000000001806e877401' +
-                       '0000001976a9143321f2d17da1a0f064ccaa8fea08d50b46' +
-                       'c38ed888ac00000000';
-      work['xnonce1'] = '07ffb0ec';
-      work['merkles'] = [];
-      work['version'] = '00000002';
-      work['nbits'] = '1d1c8031';
-      work['xnonce2len'] = 4;
-      work['xnonce2'] = '00000000';
-      work['ntime'] = '59f5e2d7';
-      work['nonce'] = worker.startn; // expected nonce: 0x1b8a
+    work['prevhash'] = '1e924c35bc128651ad5618755c3ce078' +
+                       'e20896b652575e3411106f740000000b';
+    setdiff(work, 0.2);
+    work['coinb1'] = '010000000100000000000000000000000000000000000000' +
+                     '00000000000000000000000000ffffffff270332c80f062f' +
+                     '503253482f04d7e2f55908';
+    work['coinb2'] = '0d2f6e6f64655374726174756d2f0000000001806e877401' +
+                     '0000001976a9143321f2d17da1a0f064ccaa8fea08d50b46' +
+                     'c38ed888ac00000000';
+    work['xnonce1'] = '07ffb0ec';
+    work['merkles'] = [];
+    work['version'] = '00000002';
+    work['nbits'] = '1d1c8031';
+    work['xnonce2len'] = 4;
+    work['xnonce2'] = '00000000';
+    work['ntime'] = '59f5e2d7';
+    work['nonce'] = worker.startn; // expected nonce: 0x1b8a
 
-      worker.postMessage(work);
-    }, 1000); // wait for main of foo.c
+    worker.postMessage(work);
   });
 
   $('#save').click(function(){
@@ -184,7 +205,7 @@ $(function(){
             if (worker) {
               worker.terminate();
             }
-            worker = new Worker('js/worker_all.js');
+            worker = new Worker('js/em.js');
             var now = new Date();
             worker.startt = now.getTime();
             worker.startn = 0x10000000 * i;
@@ -195,6 +216,9 @@ $(function(){
               console.log('recv from worker: ' + result);
               var xnonce2 = result[0];
               var nonce = result[1];
+              var hashstr = result[2];
+              var hashi = noncestr2int(hashstr.substr(-8));
+              rarity(hashi);
               var noncei = noncestr2int(nonce);
               console.log('nonce int = ' + noncei);
               var username = $('#username').val();
@@ -214,17 +238,14 @@ $(function(){
               console.log('restart nonce', noncei);
               this.startn = noncei;
               this.postMessage($.extend({}, work));
-
             }
           }
-          setTimeout(function(){
-            for (var i = 0; i < $('#threads').val(); i++) {
-              var worker = workers[i];
-              work['nonce'] = 0x10000000 * i;
-              console.log('start nonce', work['nonce']);
-              worker.postMessage($.extend({}, work));
-            }
-          }, 1000); // TODO wait for main of foo.c
+          for (var i = 0; i < $('#threads').val(); i++) {
+            var worker = workers[i];
+            work['nonce'] = 0x10000000 * i;
+            console.log('start nonce', work['nonce']);
+            worker.postMessage($.extend({}, work));
+          }
         }
       }
       if (!auth && doauth) {
