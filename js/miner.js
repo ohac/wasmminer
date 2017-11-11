@@ -28,6 +28,27 @@ $(function(){
     return y;
   };
 
+  var rarity = function(hashi){
+    var rstr = 'n';
+    if (hashi < 0x1000) {
+      rstr = 'ur';
+    }
+    else if (hashi < 0x4000) {
+      rstr = 'sr';
+    }
+    else if (hashi < 0x10000) {
+      rstr = 'r';
+    }
+    else if (hashi < 0x40000) {
+      rstr = 'nr';
+    }
+    rstr = '#rare_' + rstr;
+    $(rstr).show();
+    var c = parseInt($(rstr + '_count').text());
+    c++;
+    $(rstr + '_count').text(c);
+  };
+
   $('#bench').click(function(){
     var worker = new Worker('js/em.js');
     var now = new Date();
@@ -195,6 +216,9 @@ $(function(){
               console.log('recv from worker: ' + result);
               var xnonce2 = result[0];
               var nonce = result[1];
+              var hashstr = result[2];
+              var hashi = noncestr2int(hashstr.substr(-8));
+              rarity(hashi);
               var noncei = noncestr2int(nonce);
               console.log('nonce int = ' + noncei);
               var username = $('#username').val();
