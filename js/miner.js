@@ -12,7 +12,13 @@ $(function(){
   };
   setparams();
 
-  if (false) { // debug code
+  var setdiff = function(work, diff){
+    work['diff'] = diff;
+    $('#message').text('Current difficulty: ' + diff);
+  };
+
+  var debug_mode = false;
+  if (debug_mode) {
     var worker = new Worker('/js/worker_all.js');
     worker.onmessage = function(e) {
       var result = e.data;
@@ -25,7 +31,7 @@ $(function(){
 
       work['prevhash'] = '1e924c35bc128651ad5618755c3ce078' +
                          'e20896b652575e3411106f740000000b';
-      work['diff'] = 0.2;
+      setdiff(work, 0.2);
       work['coinb1'] = '010000000100000000000000000000000000000000000000' +
                        '00000000000000000000000000ffffffff270332c80f062f' +
                        '503253482f04d7e2f55908';
@@ -141,7 +147,7 @@ $(function(){
         if (method == 'mining.set_difficulty') {
           var diff = params[0];
           console.log('mining.set_difficulty: ' + diff);
-          work['diff'] = diff;
+          setdiff(work, diff);
         }
         else if (method == 'mining.notify') {
           work['jobid'] = params[0];
