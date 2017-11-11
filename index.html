@@ -52,17 +52,25 @@
         <button id="start" type="button" class="btn btn-primary">Start</button>
         <button id="stop" type="button" class="btn btn-danger" disabled>Stop</button>
         <button id="save" type="button" class="btn btn-light">Save</button>
+        <button id="bench" type="button" class="btn btn-light">Benchmark</button>
       </div>
-      <div id="connected" class="alert alert-info" role="alert" style="display: none">
+      <div id="meter" class="alert alert-dark" role="alert">
+          Speed: (hashes/s)<br>
+          Worker 1: <span id="meter1">-.-</span><br>
+          Worker 2: <span id="meter2">-.-</span><br>
+          Worker 3: <span id="meter3">-.-</span><br>
+          Worker 4: <span id="meter4">-.-</span>
+      </div>
+      <div id="connected" class="status alert alert-info" role="alert" style="display: none">
           Connected
       </div>
-      <div id="disconnected" class="alert alert-danger" role="alert" style="display: none">
+      <div id="disconnected" class="status alert alert-danger" role="alert" style="display: none">
           Disconnected
       </div>
-      <div id="message" class="alert alert-info" role="alert" style="display: none">
+      <div id="message" class="status alert alert-info" role="alert" style="display: none">
           Got message
       </div>
-      <div id="error" class="alert alert-danger" role="alert" style="display: none">
+      <div id="error" class="status alert alert-danger" role="alert" style="display: none">
           Error
       </div>
       <button id="yay" type="button" class="btn btn-success" style="display: none">
@@ -75,6 +83,6 @@
     <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script src="js/miner.js" type="text/javascript"></script>
+    <script src="/js/miner.js" type="text/javascript"></script>
   </body>
 </html>
