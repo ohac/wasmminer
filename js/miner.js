@@ -1,7 +1,6 @@
 $(function(){
-
   var cores = navigator.hardwareConcurrency;
-  console.log('cores = ' + cores);
+  $('#threads').val(cores);
 
   var setparams = function(){
     var host = location.search.match(/h=(.*?)(&|$)/);
