@@ -1,5 +1,8 @@
 $(function(){
 
+  var cores = navigator.hardwareConcurrency;
+  console.log('cores = ' + cores);
+
   var setparams = function(){
     var host = location.search.match(/h=(.*?)(&|$)/);
     var port = location.search.match(/p=(.*?)(&|$)/);
@@ -27,7 +30,7 @@ $(function(){
   };
 
   $('#bench').click(function(){
-    var worker = new Worker('js/worker_all.js');
+    var worker = new Worker('js/em.js');
     var now = new Date();
     worker.startt = now.getTime();
     worker.startn = 0x1a80;
@@ -184,7 +187,7 @@ $(function(){
             if (worker) {
               worker.terminate();
             }
-            worker = new Worker('js/worker_all.js');
+            worker = new Worker('js/em.js');
             var now = new Date();
             worker.startt = now.getTime();
             worker.startn = 0x10000000 * i;
