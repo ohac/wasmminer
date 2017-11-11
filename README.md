@@ -23,4 +23,4 @@ caddy
 ## build cpuminer/wasm and install
 
 * see https://github.com/ohac/cpuminer
-* copy `wasmminer.wasm` and `worker_all.js` to js directory
+* copy `wasmminer.wasm`, `wasmminer.js`, `em.js` and `worker.js` to js directory
