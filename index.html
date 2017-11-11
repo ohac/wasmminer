@@ -52,17 +52,25 @@
         <button id="start" type="button" class="btn btn-primary">Start</button>
         <button id="stop" type="button" class="btn btn-danger" disabled>Stop</button>
         <button id="save" type="button" class="btn btn-light">Save</button>
+        <button id="bench" type="button" class="btn btn-light">Benchmark</button>
       </div>
-      <div id="connected" class="alert alert-info" role="alert" style="display: none">
+      <div id="meter" class="alert alert-dark" role="alert">
+          Speed: (hashes/s)<br>
+          Worker 1: <span id="meter1">-.-</span><br>
+          Worker 2: <span id="meter2">-.-</span><br>
+          Worker 3: <span id="meter3">-.-</span><br>
+          Worker 4: <span id="meter4">-.-</span>
+      </div>
+      <div id="connected" class="status alert alert-info" role="alert" style="display: none">
           Connected
       </div>
-      <div id="disconnected" class="alert alert-danger" role="alert" style="display: none">
+      <div id="disconnected" class="status alert alert-danger" role="alert" style="display: none">
           Disconnected
       </div>
-      <div id="message" class="alert alert-info" role="alert" style="display: none">
+      <div id="message" class="status alert alert-info" role="alert" style="display: none">
           Got message
       </div>
-      <div id="error" class="alert alert-danger" role="alert" style="display: none">
+      <div id="error" class="status alert alert-danger" role="alert" style="display: none">
           Error
       </div>
       <button id="yay" type="button" class="btn btn-success" style="display: none">

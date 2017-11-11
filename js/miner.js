@@ -17,12 +17,31 @@ $(function(){
     $('#message').text('Current difficulty: ' + diff);
   };
 
-  var debug_mode = false;
-  if (debug_mode) {
+  var noncestr2int = function(noncestr){
+    var x = parseInt(noncestr, 16);
+    var y = ((x & 0x000000ff) << 24) |
+            ((x & 0x0000ff00) << 8) |
+            ((x & 0x00ff0000) >> 8) |
+            ((x >> 24) & 0xff);
+    return y;
+  };
+
+  $('#bench').click(function(){
     var worker = new Worker('/js/worker_all.js');
+    var now = new Date();
+    worker.startt = now.getTime();
+    worker.startn = 0x1a80;
     worker.onmessage = function(e) {
       var result = e.data;
+      var noncestr = result[1];
       console.log('recv from worker: ' + result);
+      var noncei = noncestr2int(noncestr) & 0x0fffffff;
+      var now = new Date();
+      var endt = now.getTime();
+      var difft = endt - this.startt;
+      var diffn = noncei - this.startn;
+      var speed = 1000.0*diffn/difft;
+      $('#meter1').text(parseInt(speed));
     }
     setTimeout(function(){
       var work = {};
@@ -45,11 +64,11 @@ $(function(){
       work['xnonce2len'] = 4;
       work['xnonce2'] = '00000000';
       work['ntime'] = '59f5e2d7';
-      work['nonce'] = 0x1b80; // expected nonce: 0x1b8a
+      work['nonce'] = worker.startn; // expected nonce: 0x1b8a
 
       worker.postMessage(work);
     }, 1000); // wait for main of foo.c
-  }
+  });
 
   $('#save').click(function(){
     var host = $('#host').val();
@@ -68,7 +87,7 @@ $(function(){
     ws = new WebSocket($('#proxy').val());
     ws.onopen = function(ev) {
       console.log('open');
-      $('.alert').hide();
+      $('.status').hide();
       $('#connected').show();
 
       var msg = {"id": 0, "method": "proxy.connect", "params": []};
@@ -88,13 +107,13 @@ $(function(){
     };
     ws.onclose = function(ev) {
       console.log('close');
-      $('.alert').hide();
+      $('.status').hide();
       $('#disconnected').show();
     };
     var work = {};
     ws.onmessage = function(ev) {
       console.log('message: ' + ev.data);
-      $('.alert').hide();
+      $('.status').hide();
       $('#message').show();
       var doauth = false;
       var json = JSON.parse(ev.data);
@@ -166,24 +185,41 @@ $(function(){
               worker.terminate();
             }
             worker = new Worker('/js/worker_all.js');
+            var now = new Date();
+            worker.startt = now.getTime();
+            worker.startn = 0x10000000 * i;
+            worker.coren = i;
             workers[i] = worker;
             worker.onmessage = function(e) {
               var result = e.data;
               console.log('recv from worker: ' + result);
               var xnonce2 = result[0];
               var nonce = result[1];
+              var noncei = noncestr2int(nonce);
+              console.log('nonce int = ' + noncei);
               var username = $('#username').val();
               var msg = {"id": 4, "method": "mining.submit",
                 "params": [username, work.jobid, xnonce2, work.ntime, nonce]
               };
               ws.send(JSON.stringify(msg) + "\n");
-              work['nonce'] = parseInt(nonce, 16) + 1;
-              console.log('restart nonce', work['nonce']);
-              worker.postMessage($.extend({}, work));
+              var now = new Date();
+              var endt = now.getTime();
+              var difft = endt - this.startt;
+              var diffn = noncei - this.startn;
+              var speed = 1000.0*diffn/difft;
+              $('#meter' + (this.coren + 1)).text(parseInt(speed));
+              this.startt = endt;
+              noncei++;
+              work['nonce'] = noncei;
+              console.log('restart nonce', noncei);
+              this.startn = noncei;
+              this.postMessage($.extend({}, work));
+
             }
           }
           setTimeout(function(){
             for (var i = 0; i < $('#threads').val(); i++) {
+              var worker = workers[i];
               work['nonce'] = 0x10000000 * i;
               console.log('start nonce', work['nonce']);
               worker.postMessage($.extend({}, work));
@@ -201,7 +237,7 @@ $(function(){
     };
     ws.onerror = function(ev) {
       console.log('error');
-      $('.alert').hide();
+      $('.status').hide();
       $('#error').show();
       for (var i = 0; i < workers.length; i++) {
         var worker = workers[i];
